@@ -20,7 +20,6 @@ const HighlightableText = ({
   textColor = theme.colors.black,
   highlightedTextColor,
 }:HighlightableTextInput) => { 
-  console.log(JSUtility.parseHighlightedText(text));
   const t = useCallback(() => (
     <Title
       fontSize={fontSize}
