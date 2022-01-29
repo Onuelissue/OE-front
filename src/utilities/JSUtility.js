@@ -33,7 +33,6 @@ const JSUtility = {
           text: _.last(acc).text.slice(0,-2),
           isHighlighted,
         }
-        console.log('edit' , acc);
         const lineBreak = {
           text: _.join(textArr.slice(index-2,index),""),
           isHighlighted,
