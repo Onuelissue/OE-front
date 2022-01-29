@@ -12,7 +12,7 @@ import {
   Logo,
   TextButton,
 } from '../common/Components';
-import { Container, LeftContainer, RightContainer, Title } from 'src/styles/Common';
+import { Container, Title } from 'src/styles/Common';
 const Welcome = () => {
   const isAnonymous = true;
   const views = useMemo(()=>{
