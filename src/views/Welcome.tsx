@@ -1,23 +1,26 @@
 import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import Colors from '../styles/Colors';
+import theme from '../styles/theme';
 import JSUtility from '../utilities/JSUtility';
 import {
   Main,
   Sub1,
   Sub2,
+  Sub3,
 } from '../common/Views';
 import {
   Logo,
   TextButton,
 } from '../common/Components';
+import { Container, LeftContainer, RightContainer, Title } from 'src/styles/Common';
 const Welcome = () => {
-
+  const isAnonymous = true;
   const views = useMemo(()=>{
     const renders = [
       <Main/>,
       <Sub1/>,
       <Sub2/>,
+      <Sub3/>,
     ]
     return renders;
   },[]);
@@ -40,17 +43,67 @@ const Welcome = () => {
     <>
       <Header>
         <Logo/>
-        <TextButton
-          onPress={()=>{}}
-          text='로그인'
-        />
-        <Seperator/>
-        <TextButton
-          onPress={()=>{}}
-          text='회원가입'
-        />
+        {
+          isAnonymous
+          ? (
+            <>
+              <TextButton
+                onPress={()=>{}}
+                text='로그인'
+              />
+              <Seperator/>
+              <TextButton
+                onPress={()=>{}}
+                text='구독하기'
+              />
+            </>
+
+          )
+          : (
+            <>
+              <TextButton
+                onPress={()=>{}}
+                text='로그아웃'
+              />
+              <Seperator/>
+              <TextButton
+                onPress={()=>{}}
+                text='마이페이지'
+              />
+            </>
+          )
+        }
       </Header>
         { renderViews() }
+      <Footer>
+        <Logo/>
+        <Wrapper>
+          <Container
+            flexDirection='row'
+          >
+            <Title fontSize={14}> &nbsp;문의 사항  </Title>
+            <Small fontSize={10}>onuelissue@gmail.com</Small>
+
+          </Container>
+          <Container
+            flexDirection='row'
+          >
+            <TextButton
+              onPress={()=>{}}
+              text='이용약관'
+            />
+            <TextButton
+              onPress={()=>{}}
+              text='개인정보처리방침'
+            />
+            <TextButton
+              onPress={()=>{}}
+              text='이메일무단수집거부'
+            />
+          </Container>
+
+        </Wrapper>
+      </Footer>
     </>
   );
 }
@@ -63,12 +116,36 @@ const Header = styled.div`
   top: 0;
   flex: 1;
   flex-direction: row;
-  background-color:${Colors.offWhite};
+  background-color:${theme.colors.offWhite};
   padding: ${JSUtility.convertPxToVw(10)} ${JSUtility.convertPxToVw(90)} ${JSUtility.convertPxToVw(10)} ${JSUtility.convertPxToVw(90)};
-  height: ${JSUtility.convertPxToVh(70)}
+  height: ${JSUtility.convertPxToVh(70)};
+  box-shadow: 0px 2px 15px 3px ${theme.colors.blackAlpha03};
 `
 const Seperator = styled.div`
   width: 3vw;
 `;
 
+const Footer = styled.div`
+  display:flex;
+  flex: 1;
+  flex-direction: row;
+  align-itmes: center;
+  justify-content: center;
+  background-color:${theme.colors.offWhite};
+  padding: ${JSUtility.convertPxToVw(30)} ${JSUtility.convertPxToVw(90)} ${JSUtility.convertPxToVw(30)} ${JSUtility.convertPxToVw(90)};
+`;
+
+const Wrapper = styled(Container)`
+  flex-direction:column;
+  flex: 1;
+  align-items:start;
+  justify-self: center;
+  position:absolute; 
+  left:${JSUtility.convertPxToVw(250)};
+`;
+
+const Small = styled(Title)`
+  align-self:center;
+  margin-left: ${JSUtility.convertPxToVw(10)};
+`;
 export default Welcome;
