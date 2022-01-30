@@ -12,7 +12,7 @@ type HighlightableTextInput = {
 
 type parsedText = {
   text: string;
-  isHighlighted: boolean
+  isHighlighted: boolean;
 }
 const HighlightableText = ({
   text,
