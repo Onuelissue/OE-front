@@ -12,7 +12,7 @@ type HighlightableTextInput = {
 
 type parsedText = {
   text: string;
-  isHighlighted: boolean;
+  isHighlighted: boolean
 }
 const HighlightableText = ({
   text,
@@ -20,7 +20,7 @@ const HighlightableText = ({
   textColor = theme.colors.black,
   highlightedTextColor,
 }:HighlightableTextInput) => { 
-  const t = useCallback(() => (
+  const renderHighlightedText = useCallback(() => (
     <Title
       fontSize={fontSize}
       color={textColor}
@@ -58,7 +58,7 @@ const HighlightableText = ({
   
   return (
     <div>
-      {t()}
+      {renderHighlightedText()}
     </div>
   );
 };
