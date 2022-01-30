@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import styled from 'styled-components';
-import Colors from '../styles/Colors';
+import theme from '../styles/theme';
 import JSUtility from '../utilities/JSUtility';
 
 type TextButtonInput = {
@@ -26,14 +26,14 @@ export default TextButton;
 
 const Button = styled.button`
   cursor: pointer;
-  text-align: center;
+  text-align: left;
   fontSize:${JSUtility.convertPxToVw(15)};
-  color:${Colors.black};
+  color:${theme.colors.black};
   border: 0;
   font-family: "yg-jalnan", sans-serif;
-  background: ${Colors.transparent};
+  background: ${theme.colors.transparent};
 
   :hover {
-    color:${Colors.blackAlpha}
+    color:${theme.colors.blackAlpha}
   }
 `;

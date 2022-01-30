@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import Colors from '../styles/Colors';
+import theme from '../styles/theme';
 import JSUtility from '../utilities/JSUtility';
 
 const Logo = () => (
@@ -30,6 +30,6 @@ const Container = styled.a`
 
 const Title = styled.h1`
   font-size:${JSUtility.convertPxToVw(30)};
-  color:${Colors.apple};
+  color:${theme.colors.apple};
   align-self: center;
 `;

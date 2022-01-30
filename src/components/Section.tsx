@@ -1,24 +1,26 @@
 import React from 'react';
-import styled from 'styled-components';
-import JSUtility from '../utilities/JSUtility';
-
+import theme from 'src/styles/theme';
+import { 
+  SectionContainer
+} from 'src/styles/Common';
 
 type SectionInput = {
   children: React.ReactNode;
+  background?: string;
+  flexDirection?:string;
 }
-const Section = ({ children }: SectionInput) => (
-  <Container>
+const Section = ({ 
+  children,
+  background,
+  flexDirection,
+ }: SectionInput) => (
+  <SectionContainer
+    background={background || theme.colors.white}
+    flexDirection={flexDirection || 'row'}
+  >
     {children}
-  </Container>
+  </SectionContainer>
 );
 
 export default Section;
 
-const Container = styled.div`
-  display:flex;
-  flex: 1;
-  flex-direction: row;
-  align-itmes: center;
-  justify-content: center;
-  padding: ${JSUtility.convertPxToVw(90)} 0.5vw ${JSUtility.convertPxToVw(90)} 0.5vw;
-`; 
