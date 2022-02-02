@@ -70,7 +70,7 @@ export const Button = styled.a`
   cursor: pointer;
   text-align: center;
   color:${theme.colors.white};
-  font-size:${JSUtility.convertPxToVw(20)};
+  font-size:${JSUtility.convertPxToVw(25)};
   width:${JSUtility.convertPxToVw(157)};
   padding: ${JSUtility.convertPxToVw(19)} ${JSUtility.convertPxToVw(53)};
   align-self:center;

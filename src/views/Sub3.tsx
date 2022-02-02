@@ -4,43 +4,44 @@ import {
   HighlightableText,
 } from '../common/Components';
 import {
-  LeftContainer,
   NormalizedImg,
   RightContainer,
+  Button,
+  Container,
 } from 'src/styles/Common';
 import styled from 'styled-components';
 import theme from 'src/styles/theme';
-import JSUtility from 'src/utilities/JSUtility';
 
 
 const Sub3 = () => (
   <Section
     flexDirection='row'
   >   
-    <LeftContainerInherit>
+    <Container>
       <NormalizedImg
-        width={293}
+        width={253}
         src="img/sub3/person.png"
         alt="person"
       />
-    </LeftContainerInherit>
     <RightContainerInherit>
         <HighlightableText
           text='[오이]가 알려주는\n 실시간 검색 랭킹'
-          fontSize={30}
+          fontSize={40}
           textColor={theme.colors.black}
           highlightedTextColor={theme.colors.apple}
         />
+        <Button>
+          구독 신청하기
+      </Button>
     </RightContainerInherit>
+
+    </Container>
 
   </Section>
   )
 
 export default Sub3;
 
-const LeftContainerInherit = styled(LeftContainer)`
-  padding-left: ${JSUtility.convertPxToVw(142)};
-`;
 const RightContainerInherit = styled(RightContainer)`
-  align-self:center;
+  align-self: center;
 `;
