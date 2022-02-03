@@ -12,8 +12,13 @@ import {
 import styled from 'styled-components';
 import theme from 'src/styles/theme';
 
+type Sub3Input = {
+  link: string;
+};
 
-const Sub3 = () => (
+const Sub3 = ({
+  link,
+}:Sub3Input) => (
   <Section
     flexDirection='row'
   >   
@@ -30,7 +35,7 @@ const Sub3 = () => (
           textColor={theme.colors.black}
           highlightedTextColor={theme.colors.apple}
         />
-        <Button>
+        <Button to={link}>
           구독 신청하기
       </Button>
     </RightContainerInherit>

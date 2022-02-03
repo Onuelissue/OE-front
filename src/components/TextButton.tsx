@@ -6,29 +6,33 @@ import JSUtility from '../utilities/JSUtility';
 type TextButtonInput = {
   text: string;
   onPress: ()=>void;
+  color?: string;
 }
 const TextButton = ({
   text,
+  color,
   onPress
 }:TextButtonInput) => {
   const onClick = useCallback(()=>{
-    alert('dd');
     onPress();
   },[onPress]);
 
   return (
-    <Button onClick={onClick}>
+    <Button
+      onClick={onClick}
+      color={ color || theme.colors.black }
+    >
       {text}
     </Button>
   );
 };
 export default TextButton;
 
-const Button = styled.button`
+const Button = styled.button<{color:string}>`
   cursor: pointer;
   text-align: left;
-  fontSize:${JSUtility.convertPxToVw(15)};
-  color:${theme.colors.black};
+  fontSize:${JSUtility.convertPxToVw(16)};
+  color:${(props) => props.color};
   border: 0;
   font-family: "yg-jalnan", sans-serif;
   background: ${theme.colors.transparent};
