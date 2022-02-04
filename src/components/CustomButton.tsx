@@ -8,12 +8,14 @@ type TextButtonInput = {
   onPress: ()=>void;
   color?: string;
   backgroundColor?: string;
+  hoverColor?: string;
 }
 const CustomButton = ({
   text,
   color,
   backgroundColor,
-  onPress
+  onPress,
+  hoverColor,
 }:TextButtonInput) => {
   const onClick = useCallback(()=>{
     onPress();
@@ -24,6 +26,7 @@ const CustomButton = ({
       onClick={onClick}
       color={ color || theme.colors.black }
       backgroundColor={ backgroundColor || theme.colors.transparent}
+      hoverColor = { hoverColor || theme.colors.blackAlpha}
     >
       {text}
     </Button>
@@ -34,6 +37,7 @@ export default CustomButton;
 interface ButtonInput {
   color: string;
   backgroundColor: string;
+  hoverColor: string;
 }
 const Button = styled.a<ButtonInput>`
   cursor: pointer;
@@ -45,6 +49,6 @@ const Button = styled.a<ButtonInput>`
   background-color:${(props) => props.backgroundColor};
 
   :hover {
-    background-color:${theme.colors.blackAlpha}
+    background-color:${(props) => props.hoverColor}
   }
 `;

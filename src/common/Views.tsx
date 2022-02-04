@@ -5,6 +5,7 @@ import Sub3 from '../views/Sub3';
 import Welcome from '../views/Welcome';
 import SignUp from '../views/SignUp';
 import SignIn from '../views/SignIn';
+import Complete from '../views/Complete';
 
 export {
   Main,
@@ -14,4 +15,5 @@ export {
   Welcome,
   SignUp,
   SignIn,
+  Complete,
 }

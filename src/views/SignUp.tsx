@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useMemo, useRef, useState } from 'react';
 import {
   CustomButton,
   DefaultHeader,
@@ -10,12 +10,14 @@ import { Container, Seperater, Title } from 'src/styles/Common';
 import theme from '../styles/theme';
 import {
   PrivacyPolicy,
+  SESSION_KEY_USER_EMAIL,
   TermsOfService,
 } from '../constants';
 import CheckBox from 'src/components/CheckBox';
-import TextInput from 'src/components/TextInput';
+import CustomInput from 'src/components/CustomInput';
 import styled from 'styled-components';
 import JSUtility from 'src/utilities/JSUtility';
+import ApiRequest from 'src/api/ApiRequest';
 
 enum AgreementIds {
   TERMS_OF_SERVICE = 'terms_of_service',
@@ -27,15 +29,34 @@ enum Inputs {
   PASSWORD = 'password',
   PASSWORD_CHECK = 'passwordCheck',
   EMAIL_CHECK = 'emailCheck',
+  DUPLICATED_EMAIL = 'duplicatedEmail',
 }
 
 
 
+const updateInputArrayState = (
+  setState: Dispatch<SetStateAction<Inputs[]>>,
+  ShouldRemove: boolean,
+  id: Inputs,
+) => {
+  setState((prev) => {
+    if (ShouldRemove) {
+      return prev.filter((key) => key !== id);
+    }
+    return [...prev, id];
+  })
+};
+
 const SignUp = () => {
   const navigate = useNavigate();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const emailCheckRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const passwordCheckRef = useRef<HTMLInputElement>(null);
   const [checkedAgreements, setCheckedAgreements] = useState<AgreementIds[]>([]);
   const [inputErrors, setInputErrors] = useState<Inputs[]>([]);
   const [finishedInputs, setFinishedInputs] = useState<Inputs[]>([]);
+  const [isCheckMailSent, setIsCheckMailSent] = useState(false);
   const [inputValues, setInputValues] = useState({
     id: '',
     password: '',
@@ -77,7 +98,115 @@ const SignUp = () => {
     onPressCheckBox,
   ]);
 
-  const onChange = (e:any) => {
+  const sendEmailCerfication = useCallback(() => {
+    if (finishedInputs.includes(Inputs.ID)) {
+      alert('입력하신 메일로 인증번호를 전송했습니다.');
+      setIsCheckMailSent(true);
+      return;
+    }
+    alert('이메일 입력을 확인해주세요');
+    return;
+  }, [finishedInputs]);
+
+  const checkEmailCerfication = useCallback(async () => {
+    if (inputValues.emailCheck === '') {
+      alert('인증 번호를 입력해주세요');
+      return;
+    }
+    console.log(isCheckMailSent);
+    if (finishedInputs.includes(Inputs.EMAIL_CHECK) || !isCheckMailSent) {
+      return;
+    }
+    const correctNumber = await ApiRequest.checkEmailCertification(inputValues.emailCheck);
+    if (correctNumber) {
+      alert('인증이 완료되었습니다.');
+    }
+    updateInputArrayState(setFinishedInputs,!correctNumber,Inputs.EMAIL_CHECK);
+    updateInputArrayState(setInputErrors,correctNumber,Inputs.EMAIL_CHECK);
+  }, [finishedInputs, inputValues.emailCheck, isCheckMailSent]);
+  
+  const emailDuplicationCheck = useCallback(async () => {
+    const { id : email } = inputValues;
+    if (inputErrors.includes(Inputs.ID) || inputValues.id === '') {
+      alert('이메일을 제대로 입력해주세요');
+      return;
+    }
+    try {
+      const isAlreadyExist = await ApiRequest.checkEmailDuplication(email);
+      updateInputArrayState(setInputErrors, isAlreadyExist, Inputs.DUPLICATED_EMAIL);
+      updateInputArrayState(setFinishedInputs, !isAlreadyExist, Inputs.ID);
+      console.log(isAlreadyExist);
+    } catch(e) {
+      console.log(e);
+    }
+  }, [inputErrors, inputValues]);
+
+
+  const validCheck = useCallback((name: Inputs , value: string) => {
+    let isValid = true;
+    // eslint-disable-next-line no-useless-escape
+    var emailRegex=/([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    var passwordRegex=/^[a-z0-9]{8,15}$/;
+
+    switch(name) {
+      case Inputs.ID:
+        isValid = (value !== '' &&  emailRegex.test(value)); 
+        break;
+      case Inputs.PASSWORD:
+        isValid = (value !== '' &&  passwordRegex.test(value)); 
+        break;
+    }
+    updateInputArrayState(setInputErrors, isValid, name );
+    return isValid;
+  }, []);
+
+  const requiredCheckAll = useCallback(() => {
+    if (!requiredCheck) {
+      alert('필수 항목에 동의해주세요');
+      return false;
+    }
+    if (!finishedInputs.includes(Inputs.ID)) {
+      alert('이메일 입력이 완료되지 않았습니다.');
+      emailRef.current?.focus();
+      return false;
+    }
+    if (!finishedInputs.includes(Inputs.EMAIL_CHECK)) {
+      alert('이메일 인증 완료되지 않았습니다.');
+      emailCheckRef.current?.focus();
+      return false;
+    }
+    if (!finishedInputs.includes(Inputs.PASSWORD)) {
+      alert('비밀 번호를 입력해주세요.');
+      passwordRef.current?.focus();
+      return false;
+    }
+    if (!finishedInputs.includes(Inputs.PASSWORD_CHECK)) {
+      alert('비밀 번호 확인을 입력해주세요.');
+      passwordCheckRef.current?.focus();
+      return false;
+    }
+    return true;
+  },[finishedInputs, requiredCheck]);
+
+  const submit = useCallback(async () => {
+    const isAllValid = requiredCheckAll();
+    if (isAllValid) {
+      try {
+        const result = await ApiRequest.signUp({
+          email: inputValues.id,
+          password: inputValues.password,
+        });
+        if (result) {
+          //세션 스토리지에 정보 저장
+          sessionStorage.setItem(SESSION_KEY_USER_EMAIL,inputValues.id);
+        }
+      } catch(e) {
+        console.log(e);
+      }
+    }
+  }, [inputValues.id, inputValues.password, requiredCheckAll]);
+
+  const onChange = useCallback((e:any) => {
     const {value, name} = e.target;
     setInputValues((prev) => ({
       ...prev,
@@ -85,34 +214,65 @@ const SignUp = () => {
     }));
     switch(name) {
       case Inputs.ID:
-        console.log(' 아이디');
+        if (finishedInputs.includes(Inputs.ID)) {
+          setFinishedInputs((prev) => (
+            prev.filter((key) => key!==Inputs.ID && key !== Inputs.EMAIL_CHECK)
+          ));
+        }
+        setInputErrors((prev) => (
+          prev.filter((key) => key !== Inputs.DUPLICATED_EMAIL)
+        ));
+        validCheck(name,value);
         break;
       case Inputs.EMAIL_CHECK:
         console.log(' 이메일 인증 번호');
         break;
       case Inputs.PASSWORD:
-        console.log(' 비밀 번호 ');
+        const isValid = validCheck(name,value);
+        updateInputArrayState(setFinishedInputs, !isValid, Inputs.PASSWORD);
+        if (finishedInputs.includes(Inputs.PASSWORD)) {
+          setFinishedInputs((prev) => (
+            prev.filter((key) => key!==Inputs.PASSWORD && key !== Inputs.PASSWORD_CHECK)
+          ));
+        }
+        if (inputValues.passwordCheck.length > 1) {
+          updateInputArrayState(setInputErrors, inputValues.passwordCheck === value, Inputs.PASSWORD_CHECK );
+        }
         break;
       case Inputs.PASSWORD_CHECK:
-        console.log(' 비밀 번호 확인 ');
+        const passwordCheckPass = inputValues.password === value;
+        if (finishedInputs.includes(Inputs.PASSWORD)) {
+          setFinishedInputs((prev) => (
+            prev.filter((key) => key!==Inputs.PASSWORD && key !== Inputs.PASSWORD_CHECK)
+          ));
+        }
+        if (passwordCheckPass) {
+          setFinishedInputs((prev) => [...prev, Inputs.PASSWORD_CHECK]);
+        }
+        updateInputArrayState(setInputErrors, passwordCheckPass, Inputs.PASSWORD_CHECK );
         break;
     }
-  };
+  },[finishedInputs, validCheck, inputValues.passwordCheck, inputValues.password]);
 
 
   const inputs = useMemo(() => ([
     {
       name: Inputs.ID,
       value: id,
-      labelText: '아이디',
-      errorText: '이미 존재하는 아이디입니다.',
+      labelText: '이메일',
+      errorText: inputErrors.includes(Inputs.ID)
+        ? '올바른 이메일 형식이 아닙니다'
+        : inputErrors.includes(Inputs.DUPLICATED_EMAIL)
+          ? '이미 존재하는 이메일입니다.'
+          :'올바른 이메일 형식이 아닙니다',
       placeholder:'이메일을 입력하세요 ex) onuelissue@gmail',
       onChange,
-      error: inputErrors.includes(Inputs.ID),
+      ref: emailRef,
+      error: inputErrors.includes(Inputs.ID) || inputErrors.includes(Inputs.DUPLICATED_EMAIL),
       width: 570,
       rightRenderView: (
         <CustomButton
-          onPress={()=>{}}
+          onPress={emailDuplicationCheck}
           text={ finishedInputs.includes(Inputs.ID) ? '사용 가능' :'중복 확인' }
           color={theme.colors.white}
           backgroundColor={finishedInputs.includes(Inputs.ID)? theme.colors.apple : theme.colors.grayishBrown }
@@ -126,19 +286,20 @@ const SignUp = () => {
       errorText: '인증 번호가 일치하지 않습니다.',
       placeholder:'인증 번호 입력',
       onChange,
+      ref: emailCheckRef,
       error: inputErrors.includes(Inputs.EMAIL_CHECK),
       rightRenderView: (
         <CustomButton
-          onPress={()=>{}}
+          onPress={checkEmailCerfication}
           text={ finishedInputs.includes(Inputs.ID) ? '인증 완료' :'인증 확인' }
           color={theme.colors.white}
-          backgroundColor={finishedInputs.includes(Inputs.ID)? theme.colors.apple : theme.colors.grayishBrown }
+          backgroundColor={finishedInputs.includes(Inputs.EMAIL_CHECK)? theme.colors.apple : theme.colors.grayishBrown }
         />
       ),
       leftRenderView: (
         <CustomButton
-          onPress={()=>{}}
-          text='이메일 인증하기'
+          onPress={sendEmailCerfication}
+          text='인증번호 전송'
           color={theme.colors.white}
           backgroundColor={theme.colors.grayishBrown}
         />
@@ -152,6 +313,7 @@ const SignUp = () => {
       errorText: '잘못된 형식입니다.',
       placeholder:'(8자~15자의 숫자와 영문 조합)',
       onChange,
+      ref: passwordRef,
       width: 737,
       error: inputErrors.includes(Inputs.PASSWORD),
     },
@@ -163,17 +325,11 @@ const SignUp = () => {
       errorText: '비밀번호가 일치하지 않습니다.',
       placeholder:'비밀번호를 재입력해주세요',
       onChange,
+      ref: passwordCheckRef,
       width: 737,
       error: inputErrors.includes(Inputs.PASSWORD_CHECK),
     },
-  ]), [
-    emailCheck,
-    finishedInputs,
-    id,
-    inputErrors,
-    password,
-    passwordCheck
-  ]);
+  ]), [checkEmailCerfication, emailCheck, emailDuplicationCheck, finishedInputs, id, inputErrors, onChange, password, passwordCheck, sendEmailCerfication]);
 
   const renderInputs = useCallback(() => (
     <>
@@ -201,14 +357,15 @@ const SignUp = () => {
                       flexDirection='column'
                       alignItems='start'
                     >
-                      <TextInput
-                        name={item.name}
+                      <CustomInput
+                        targetName={item.name}
                         type={item.type}
                         value={item.value}
                         placeholder={item.placeholder}
-                        onChange={onChange}
+                        onChange={item.onChange}
                         error={item.error}
                         width={item.width}
+                        ref={item.ref}
                       />
                       {
                         item.error && (
@@ -242,7 +399,7 @@ const SignUp = () => {
       {
         checkBoxes.map((item, index) => (
           <React.Fragment key= {`checkBox- ${index}`}>
-            <CheckBox
+            <CheckBox 
               id={item.id}
               isChecked={item.isChecked}
               setIsChecked={item.setIsChecked}
@@ -289,10 +446,11 @@ const SignUp = () => {
         size={15}
       />
       <CustomButton
-        onPress={()=>{}}
+        onPress={submit}
         text='회원 가입'
         color={theme.colors.white}
         backgroundColor={theme.colors.apple}
+        hoverColor={theme.colors.treeGreen}
       />
     </Section>
   );
