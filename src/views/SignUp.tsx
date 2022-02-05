@@ -167,7 +167,8 @@ const SignUp = () => {
     updateInputArrayState(setInputErrors, isValid, name );
     return isValid;
   }, []);
-
+  
+  //유효성 검사
   const requiredCheckAll = useCallback(() => {
     if (!requiredCheck) {
       alert('필수 항목에 동의해주세요');
@@ -205,8 +206,8 @@ const SignUp = () => {
           password: inputValues.password,
         });
         if (result) {
-          //세션 스토리지에 정보 저장
-          sessionStorage.setItem(SESSION_KEY_USER_EMAIL,inputValues.id);
+          //로컬 스토리지에 정보 저장
+          localStorage.setItem(SESSION_KEY_USER_EMAIL,inputValues.id);
         }
       } catch(e) {
         console.log(e);
