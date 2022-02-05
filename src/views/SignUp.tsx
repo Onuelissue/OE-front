@@ -56,26 +56,28 @@ const updateInputArrayState = (
 
 const SignUp = () => {
   const navigate = useNavigate();
+  
   // FIXME: Ref array로 한꺼번에 관리하도록
   const emailRef = useRef<HTMLInputElement>(null);
   const emailCheckRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordCheckRef = useRef<HTMLInputElement>(null);
-  const [checkedAgreements, setCheckedAgreements] = useState<AgreementIds[]>([]);
-  const [inputErrors, setInputErrors] = useState<Inputs[]>([]);
-  const [finishedInputs, setFinishedInputs] = useState<Inputs[]>([]);
-  const [isCheckMailSent, setIsCheckMailSent] = useState(false);
-  const [inputValues, setInputValues] = useState({
+  const [checkedAgreements, setCheckedAgreements] = useState<AgreementIds[]>([]); // 체크 박스 배열
+  const [inputErrors, setInputErrors] = useState<Inputs[]>([]); // 인풋 에러 배열
+  const [finishedInputs, setFinishedInputs] = useState<Inputs[]>([]); // 입력 완료된 인풋 배열
+  const [isCheckMailSent, setIsCheckMailSent] = useState(false); // 이메일 인증 번호 전송 여부
+  const [inputValues, setInputValues] = useState({ // 인풋 값 배열
     id: '',
     password: '',
     passwordCheck: '',
     emailCheck: '',
   });
   const {id, password, passwordCheck, emailCheck } = inputValues;
-  const requiredCheck = (
+  const requiredCheck = ( // 체크 박스 필수 사항 체크
     checkedAgreements.includes(AgreementIds.TERMS_OF_SERVICE)
     && checkedAgreements.includes(AgreementIds.PRIVACY)
   );
+  // 체크 박스 눌렀을 때 
   const onPressCheckBox = useCallback((agreementKey) => {
     if (agreementKey == null) return ;
     setCheckedAgreements((prevCheckedAgreement) => {
@@ -86,6 +88,7 @@ const SignUp = () => {
     })
   },[]);
   
+  // 체크 박스 정보
   const checkBoxes = useMemo(() => ([
     {
       id: AgreementIds.TERMS_OF_SERVICE,
@@ -106,6 +109,7 @@ const SignUp = () => {
     onPressCheckBox,
   ]);
 
+  // 이메일 인증 번호 전송
   const sendEmailCerfication = useCallback(() => {
     if (finishedInputs.includes(Inputs.ID)) {
       alert('입력하신 메일로 인증번호를 전송했습니다.');
@@ -116,6 +120,7 @@ const SignUp = () => {
     return;
   }, [finishedInputs]);
 
+  // 이메일 인증 번호 확인
   const checkEmailCerfication = useCallback(async () => {
     if (inputValues.emailCheck === '') {
       alert('인증 번호를 입력해주세요');
@@ -133,6 +138,7 @@ const SignUp = () => {
     updateInputArrayState(setInputErrors,correctNumber,Inputs.EMAIL_CHECK);
   }, [finishedInputs, inputValues.emailCheck, isCheckMailSent]);
   
+  // 이메일 중복 체크
   const emailDuplicationCheck = useCallback(async () => {
     const { id : email } = inputValues;
     if (inputErrors.includes(Inputs.ID) || inputValues.id === '') {
@@ -149,7 +155,7 @@ const SignUp = () => {
     }
   }, [inputErrors, inputValues]);
 
-
+  // 이메일 비밀 번호 유효성 검사
   const validCheck = useCallback((name: Inputs , value: string) => {
     let isValid = true;
     // eslint-disable-next-line no-useless-escape
@@ -167,8 +173,8 @@ const SignUp = () => {
     updateInputArrayState(setInputErrors, isValid, name );
     return isValid;
   }, []);
-  
-  //유효성 검사
+
+  // 입력 폼들 체크
   const requiredCheckAll = useCallback(() => {
     if (!requiredCheck) {
       alert('필수 항목에 동의해주세요');
@@ -219,12 +225,14 @@ const SignUp = () => {
     requiredCheckAll,
   ]);
 
+  // input onChange
   const onChange = useCallback((e:any) => {
     const {value, name} = e.target;
     setInputValues((prev) => ({
       ...prev,
       [name] : value,
     }));
+    // 각 input 별 오류 처리
     switch(name) {
       case Inputs.ID:
         if (finishedInputs.includes(Inputs.ID)) {
