@@ -17,7 +17,7 @@ import { Container, Seperater, Title } from 'src/styles/Common';
 import theme from '../styles/theme';
 import {
   PrivacyPolicy,
-  SESSION_KEY_USER_EMAIL,
+  STORAGE_KEY_USER_EMAIL,
   TermsOfService,
 } from '../constants';
 import CheckBox from 'src/components/CheckBox';
@@ -213,7 +213,7 @@ const SignUp = () => {
         });
         if (result) {
           //로컬 스토리지에 정보 저장
-          localStorage.setItem(SESSION_KEY_USER_EMAIL,inputValues.id);
+          localStorage.setItem(STORAGE_KEY_USER_EMAIL,inputValues.id);
         }
       } catch(e) {
         console.log(e);
