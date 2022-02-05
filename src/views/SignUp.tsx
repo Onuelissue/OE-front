@@ -19,6 +19,7 @@ import {
   PrivacyPolicy,
   STORAGE_KEY_USER_EMAIL,
   TermsOfService,
+  RouteNames,
 } from '../constants';
 import CheckBox from 'src/components/CheckBox';
 import CustomInput from 'src/components/CustomInput';
@@ -160,7 +161,7 @@ const SignUp = () => {
     let isValid = true;
     // eslint-disable-next-line no-useless-escape
     var emailRegex=/([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
-    var passwordRegex=/^[a-z0-9]{8,15}$/;
+    var passwordRegex=/^(?=.*[a-z])(?=.*\d)[A-Za-z\d]{8,15}$/;
 
     switch(name) {
       case Inputs.ID:
@@ -176,6 +177,7 @@ const SignUp = () => {
 
   // 입력 폼들 체크
   const requiredCheckAll = useCallback(() => {
+    console.log(finishedInputs);
     if (!requiredCheck) {
       alert('필수 항목에 동의해주세요');
       return false;
@@ -214,6 +216,7 @@ const SignUp = () => {
         if (result) {
           //로컬 스토리지에 정보 저장
           localStorage.setItem(STORAGE_KEY_USER_EMAIL,inputValues.id);
+          navigate(RouteNames.COMPLETE);
         }
       } catch(e) {
         console.log(e);
@@ -222,6 +225,7 @@ const SignUp = () => {
   }, [
     inputValues.id,
     inputValues.password,
+    navigate,
     requiredCheckAll,
   ]);
 
@@ -262,9 +266,9 @@ const SignUp = () => {
         break;
       case Inputs.PASSWORD_CHECK:
         const passwordCheckPass = inputValues.password === value;
-        if (finishedInputs.includes(Inputs.PASSWORD)) {
+        if (finishedInputs.includes(Inputs.PASSWORD_CHECK)) {
           setFinishedInputs((prev) => (
-            prev.filter((key) => key!==Inputs.PASSWORD && key !== Inputs.PASSWORD_CHECK)
+            prev.filter((key) => key !== Inputs.PASSWORD_CHECK)
           ));
         }
         if (passwordCheckPass) {
@@ -312,7 +316,7 @@ const SignUp = () => {
       rightRenderView: (
         <CustomButton
           onPress={checkEmailCerfication}
-          text={ finishedInputs.includes(Inputs.ID) ? '인증 완료' :'인증 확인' }
+          text={ finishedInputs.includes(Inputs.EMAIL_CHECK) ? '인증 완료' :'인증 확인' }
           color={theme.colors.white}
           backgroundColor={finishedInputs.includes(Inputs.EMAIL_CHECK)? theme.colors.apple : theme.colors.grayishBrown }
         />
