@@ -49,6 +49,7 @@ const updateInputArrayState = (
 
 const SignUp = () => {
   const navigate = useNavigate();
+  // FIXME: Ref array로 한꺼번에 관리하도록
   const emailRef = useRef<HTMLInputElement>(null);
   const emailCheckRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
@@ -204,7 +205,11 @@ const SignUp = () => {
         console.log(e);
       }
     }
-  }, [inputValues.id, inputValues.password, requiredCheckAll]);
+  }, [
+    inputValues.id,
+    inputValues.password,
+    requiredCheckAll,
+  ]);
 
   const onChange = useCallback((e:any) => {
     const {value, name} = e.target;
@@ -329,7 +334,18 @@ const SignUp = () => {
       width: 737,
       error: inputErrors.includes(Inputs.PASSWORD_CHECK),
     },
-  ]), [checkEmailCerfication, emailCheck, emailDuplicationCheck, finishedInputs, id, inputErrors, onChange, password, passwordCheck, sendEmailCerfication]);
+  ]), [
+    checkEmailCerfication,
+    emailCheck,
+    emailDuplicationCheck,
+    finishedInputs,
+    id,
+    inputErrors,
+    onChange,
+    password,
+    passwordCheck,
+    sendEmailCerfication,
+  ]);
 
   const renderInputs = useCallback(() => (
     <>
