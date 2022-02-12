@@ -6,44 +6,32 @@ import React,
   useRef,
 } from 'react';
 import {
-  CustomButton,
   DefaultHeader,
-  HighlightableText,
   Section,
 } from '../common/Components';
 import theme from 'src/styles/theme';
 import ApiRequest from 'src/api/ApiRequest';
-import { RouteNames, STORAGE_KEY_USER_EMAIL } from 'src/constants';
-import { useNavigate } from 'react-router-dom';
-import { Container, Seperater, Title } from 'src/styles/Common';
+import { Container, Description, Seperater, Title } from 'src/styles/Common';
 import CustomInput from 'src/components/CustomInput';
 import styled from 'styled-components';
+import JSUtility from 'src/utilities/JSUtility';
+import { useNavigate } from 'react-router-dom';
 
 
 enum Result {
   OK = 1,
   EMAIL_ERROR = 2,
-  PASSWORD_ERROR = 3,
-}
-
-enum Inputs {
-  ID = 'id',
-  PASSWORD = 'password',
 }
 
 
 const inputWidth = 300;
 
-const SignIn = () => {
+const FindPassword = () => {
   const navigate = useNavigate();
   const emailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-  const [inputValues, setInputValues] = useState({ // 인풋 값 배열
-    id: '',
-    password: '',
-  });
-  const [inputErrors, setInputErrors] = useState<Inputs[]>([]); // 인풋 에러 배열
-  const {id, password} = inputValues;
+  const [id, setId] = useState('')
+  const [idErrors, setIdErrors] = useState(false); // 인풋 에러 배열
+  const [sendEmail, setSendEmail] = useState(false); // 인풋 에러 배열
    // 입력 폼들 체크
 
   const requiredCheckAll = useCallback(() => {
@@ -52,93 +40,52 @@ const SignIn = () => {
       emailRef.current?.focus();
       return false;
     }
-    if (password === '') {
-      alert('비밀 번호를 입력해주세요.');
-      passwordRef.current?.focus();
-      return false;
-    }
     return true;
-  },[id, password]);
+  },[id]);
 
   const submit = useCallback(async () => {
     const isAllValid = requiredCheckAll();
     if (isAllValid) {
       try {
-        const result = await ApiRequest.signIn({
-          email: inputValues.id,
-          password: inputValues.password,
-        });
-
+        const result = await ApiRequest.resetPassword(id);
         switch (result){
           case Result.OK:
-            //로컬 스토리지에 정보 저장
-            localStorage.setItem(STORAGE_KEY_USER_EMAIL,inputValues.id);
-            navigate('/');
+            setSendEmail(true);
           break;
           case Result.EMAIL_ERROR:
             emailRef.current?.focus();
-            setInputErrors((prev) => ([...prev, Inputs.ID]));
+            setIdErrors(true);
           break;
-          case Result.PASSWORD_ERROR:
-            passwordRef.current?.focus();
-            setInputErrors((prev) => ([...prev, Inputs.PASSWORD]));
-          break;
-
         }
       } catch(e) {
         console.log(e);
       }
     }
-  }, [
-    inputValues.id,
-    inputValues.password,
-    navigate,
-    requiredCheckAll,
-  ]);
+  }, [id, requiredCheckAll]);
 
   // input onChange
   const onChange = useCallback((e:any) => {
-    const {value, name} = e.target;
-    setInputValues((prev) => ({
-      ...prev,
-      [name] : value,
-    }));
+    const { value } = e.target;
+    setId(value);
   },[]);
 
 
   const inputs = useMemo(() => ([
     {
-      name: Inputs.ID,
+      name: id,
       value: id,
       labelText: '이메일',
-      errorText: inputErrors.includes(Inputs.ID)
+      errorText: idErrors
         ? '등록되지 않은 이메일입니다.'
         : '',
       placeholder:'이메일을 입력하세요',
       onChange,
       ref: emailRef,
-      error: inputErrors.includes(Inputs.ID),
+      error: idErrors,
       width: inputWidth,
-    },
-    { 
-      name: Inputs.PASSWORD,
-      type: 'password',
-      value: password,
-      labelText: '비밀번호',
-      errorText: '비밀번호가 일치하지 않습니다.',
-      placeholder:'비밀번호를 입력하세요',
-      onChange,
-      ref: passwordRef,
-      width: inputWidth,
-      error: inputErrors.includes(Inputs.PASSWORD),
     },
   ]),
-  [
-    id,
-    inputErrors,
-    onChange,
-    password,
-  ]);
+  [id, idErrors, onChange]);
 
   const renderInputs = useCallback(() => (
     <>
@@ -150,14 +97,12 @@ const SignIn = () => {
                     flexDirection='column'
                     alignItems='start'
                   >
-                    <Title fontSize={20}>{item.labelText}</Title>
                       <InputContainer
                         flexDirection='column'
                         alignItems='start'
                       >
                         <CustomInput
                           targetName={item.name}
-                          type={item.type}
                           value={item.value}
                           placeholder={item.placeholder}
                           onChange={item.onChange}
@@ -188,12 +133,65 @@ const SignIn = () => {
       }
     </>
   ),[inputs]);
-  return ( 
-  
+
+  const renderFinishPage = useCallback(()=> (
     <Section
       flexDirection='column'
     >
-      <DefaultHeader alignItems='center'/>
+      <Seperater
+        direction='vertical'
+        size={75}
+      />
+      <Title
+        fontSize={25}
+        color={theme.colors.grayishBrown}
+      >
+        인증번호 발송 완료
+      </Title>
+      <Description>
+        입력하신 이메일로 임시 비밀번호를 발송했습니다. <br/>
+        메일 확인 후 임시 비밀번호로 로그인해 주세요. <br/>
+        로그인 후 비밀번호를 변경해 주시기 바랍니다.
+      </Description>
+      <DefaultHeader
+        alignItems='center'
+        height={120}
+        fontSize={50}
+      />
+      <Seperater
+        direction='vertical'
+        size={55}
+      />
+      
+      <Next onClick={()=> navigate('/')}>
+        확인
+      </Next>
+    </Section>
+  ), [navigate]);
+
+  const renderSendPage = useCallback(()=> (
+    <Section
+      flexDirection='column'
+    >
+      <Seperater
+        direction='vertical'
+        size={75}
+      />
+      <Title
+        fontSize={25}
+        color={theme.colors.grayishBrown}
+      >
+        이메일 확인
+      </Title>
+      <Description>
+        계정 확인 및 본인 확인을 위한 이메일 인증이 필요합니다.<br/>
+        가입하신 이메일을 입력해 주세요.
+      </Description>
+      <DefaultHeader
+        alignItems='center'
+        height={120}
+        fontSize={50}
+      />
       <Seperater
         direction='vertical'
         size={55}
@@ -203,48 +201,38 @@ const SignIn = () => {
         direction='vertical'
         size={35}
       />
-      <CustomButton
-        onPress={submit}
-        text='로그인'
-        color={theme.colors.white}
-        backgroundColor={theme.colors.apple}
-        hoverColor={theme.colors.treeGreen}
-      />
-      <Seperater
-        direction='vertical'
-        size={35}
-      />
-      <Wrapper
-        onClick={()=> navigate(RouteNames.SIGN_UP)}
-      >
-        <HighlightableText
-          text='아직 가입을 하지 않으셨나요? [회원가입]'
-          fontSize={15}
-          textColor={theme.colors.black}
-          highlightedTextColor={theme.colors.apple}
-        /> 
-      </Wrapper>
-      <Wrapper
-        onClick={()=> navigate(RouteNames.FINDPASSWORD)}
-      >
-        <HighlightableText
-          text='비밀번호를 잊으셨나요? [비밀번호 찾기]'
-          fontSize={15}
-          textColor={theme.colors.black}
-          highlightedTextColor={theme.colors.apple}
-        />
-      </Wrapper>
+      <Next onClick={submit}>
+        확인
+      </Next>
     </Section>
-  );
+  ), [renderInputs, submit]);
+
+
+  if (sendEmail) {
+    return renderFinishPage();
+  }
+  return renderSendPage();
 }
-export default SignIn;
+export default FindPassword;
 
 const InputContainer = styled(Container)`
   align-items: start;
   justify-content: space-between;
 `;
 
-const Wrapper = styled.div`
+const Next = styled.div`
   cursor: pointer;
+  width: ${JSUtility.convertPxToVw(100)};
+  padding-bottom: ${JSUtility.convertPxToVh(15)};
+  background-color: ${theme.colors.apple};
+  color:${theme.colors.white};
+  border-radius: ${JSUtility.convertPxToVw(50)};
+  padding: ${JSUtility.convertPxToVw(3)};
+  font-size: ${JSUtility.convertPxToVw(15)};
+  text-align: center; 
+  &:hover, active {
+    background-color: ${theme.colors.treeGreen};
+    color:${theme.colors.white};
+  }
 `;
 

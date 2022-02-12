@@ -11,6 +11,7 @@ export enum RouteNames {
   // Auth
   SIGN_UP = '/signup',
   SIGN_IN = '/signin',
-  COMPLETE = '/complete',
-
+  COMPLETE = '/complete/*',
+  MYPAGE = '/mypage',
+  FINDPASSWORD = '/findPassword',
 };

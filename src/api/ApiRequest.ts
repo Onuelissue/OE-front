@@ -36,6 +36,18 @@ const ApiRequest = (function ApiRequestCreator() {
         resolve(true)
       ));
     },
+    signIn(input:SignUpInput): Promise<Number> {
+      console.log(input);
+      return new Promise((resolve) => (
+        resolve(2)
+      ));
+    },
+    resetPassword(id:string): Promise<Number> {
+      console.log(id);
+      return new Promise((resolve) => (
+        resolve(2)
+      ));
+    },
   };
 }());
 

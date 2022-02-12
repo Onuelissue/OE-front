@@ -4,13 +4,20 @@ import theme from '../styles/theme';
 import JSUtility from '../utilities/JSUtility';
 import { Link } from 'react-router-dom';
 
-const Logo = () => (
+type LogoInput = {
+  fontSize?: number;
+}
+const Logo = ({
+  fontSize,
+}:LogoInput) => (
   <Container to ="/">
     <img 
       src="img/logo.png"
       alt="logo"
     />
-    <Title> 오이 </Title>
+    <Title
+      fontSize={fontSize || 35}
+    > 오이 </Title>
   </Container>
 );
 export default Logo;
@@ -23,14 +30,14 @@ const Container = styled(Link)`
   justify-content: flex-start;
   text-decoration: none;
   > img {
-    width:${JSUtility.convertPxToVw(35)};
+    width:${JSUtility.convertPxToVw(45)};
     margin-right:${JSUtility.convertPxToVw(15)};
     align-self: center;
   }
 `;
 
-const Title = styled.h1`
-  font-size:${JSUtility.convertPxToVw(30)};
+const Title = styled.h1<{fontSize:number}>`
+  font-size:${(props) => JSUtility.convertPxToVw(props.fontSize)};
   color:${theme.colors.apple};
   align-self: center;
 `;

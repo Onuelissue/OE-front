@@ -4,14 +4,14 @@ import _ from 'lodash';
 const JSUtility = {
   convertPxToVw(value) {
     const viewPortWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-    const vw = 100 * (value / viewPortWidth);
-    return `${vw}vw`;
+    const vw = 100 * value / viewPortWidth;
+    return `${vw.toFixed(2)}vw`;
   },
 
   convertPxToVh(value) {
     const viewPortHeight = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-    const vh = 100 * (value / viewPortHeight);
-    return `${vh}vh`;
+    const vh = 100 * value / viewPortHeight;
+    return `${vh.toFixed(2)}vh`;
   },
   parseHighlightedText(text) {
     let isHighlighted = false;

@@ -36,7 +36,7 @@ const HighlightableText = ({
             }
             if (isHighlighted) {
               return (
-                <InsideText key={`page-${index}`}
+                <InsideText key={`page-${text}`}
                   fontSize={fontSize}
                   color={highlightedTextColor}
                 >

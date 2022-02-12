@@ -4,11 +4,13 @@ import theme from '../styles/theme';
 import JSUtility from '../utilities/JSUtility';
 
 type TextButtonInput = {
+  fontSize?: number;
   text: string;
   onPress: ()=>void;
   color?: string;
 }
 const TextButton = ({
+  fontSize,
   text,
   color,
   onPress
@@ -21,6 +23,7 @@ const TextButton = ({
     <Button
       onClick={onClick}
       color={ color || theme.colors.black }
+      fontSize={fontSize || 16}
     >
       {text}
     </Button>
@@ -28,10 +31,15 @@ const TextButton = ({
 };
 export default TextButton;
 
-const Button = styled.button<{color:string}>`
+
+type StyledTextButtonInput = {
+  fontSize?: number;
+  color?: string;
+}
+const Button = styled.button<StyledTextButtonInput>`
   cursor: pointer;
   text-align: left;
-  fontSize:${JSUtility.convertPxToVw(16)};
+  font-size:${(props) => JSUtility.convertPxToVw(props.fontSize)};
   color:${(props) => props.color};
   border: 0;
   font-family: "yg-jalnan", sans-serif;

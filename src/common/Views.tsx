@@ -6,7 +6,8 @@ import Welcome from '../views/Welcome';
 import SignUp from '../views/SignUp';
 import SignIn from '../views/SignIn';
 import Complete from '../views/Complete';
-
+import MyPage from 'src/views/MyPage';
+import FindPassword from 'src/views/FindPassword';
 export {
   Main,
   Sub1,
@@ -16,4 +17,6 @@ export {
   SignUp,
   SignIn,
   Complete,
+  MyPage,
+  FindPassword,
 }

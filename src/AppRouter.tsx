@@ -9,6 +9,8 @@ import {
   SignUp,
   SignIn,
   Complete,
+  MyPage,
+  FindPassword,
 } from './common/Views';
 import {
   RouteNames
@@ -20,6 +22,8 @@ const AppRouter = () => (
       <Route path={RouteNames.SIGN_UP} element={<SignUp/>}/>
       <Route path={RouteNames.SIGN_IN} element={<SignIn/>}/>
       <Route path={RouteNames.COMPLETE} element={<Complete/>}/>
+      <Route path={RouteNames.MYPAGE} element={<MyPage/>}/>
+      <Route path={RouteNames.FINDPASSWORD} element={<FindPassword/>}/>
     </Routes>
   </Router>
 )
