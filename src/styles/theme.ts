@@ -10,6 +10,7 @@ const colors={
   offWhite: '#f7fff5',
   pinkishGrey: '#c7c7c7',
   white:'white',
+  grayishBrown: '#484747',
 };
 
 const fonts = {

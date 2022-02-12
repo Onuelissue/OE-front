@@ -10,7 +10,13 @@ import {
 import styled from 'styled-components';
 import {Section} from '../common/Components';
 
-const Main = () => (
+type MainInput = {
+  link: string;
+};
+
+const Main = ({
+  link,
+}:MainInput) => (
   <Section>
     <LeftContainer>
       <Title
@@ -19,7 +25,7 @@ const Main = () => (
         당신만 모르는 오늘의 이슈 <br/>
         오이가 전해줄게요!
       </Title>
-      <Button>
+      <Button to={link}>
         구독 신청하기
     </Button>
     </LeftContainer>

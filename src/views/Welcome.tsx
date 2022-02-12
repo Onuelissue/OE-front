@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import theme from '../styles/theme';
 import JSUtility from '../utilities/JSUtility';
+import { useNavigate } from "react-router-dom";
 import {
   Main,
   Sub1,
@@ -12,19 +13,27 @@ import {
   Logo,
   TextButton,
 } from '../common/Components';
+import {
+  PrivacyPolicy,
+  TermsOfService,
+  TermsOfEmail,
+} from '../constants';
+
 import { Container, Title } from 'src/styles/Common';
 const Welcome = () => {
+  const navigate = useNavigate();
   const isAnonymous = true;
+  const signUpLink = "/signup";
   const views = useMemo(()=>{
     const renders = [
-      <Main/>,
+      <Main link={signUpLink}/>,
       <Sub1/>,
       <Sub2/>,
-      <Sub3/>,
+      <Sub3 link={signUpLink}/>,
     ]
     return renders;
   },[]);
-
+  
   const renderViews = useCallback(()=>(
     <>
     {
@@ -38,7 +47,10 @@ const Welcome = () => {
     }
     </>
   ),[views]);
-
+  
+  const opneURl = useCallback((url) => {
+    window.location.href=url;
+  },[]);
   return (
     <>
       <Header>
@@ -48,12 +60,12 @@ const Welcome = () => {
           ? (
             <>
               <TextButton
-                onPress={()=>{}}
+                onPress={() => navigate("signin")}
                 text='로그인'
               />
               <Seperator/>
               <TextButton
-                onPress={()=>{}}
+                onPress={() => navigate("signup")}
                 text='구독하기'
               />
             </>
@@ -89,15 +101,15 @@ const Welcome = () => {
             flexDirection='row'
           >
             <TextButton
-              onPress={()=>{}}
+              onPress={()=>opneURl(TermsOfService)}
               text='이용약관'
             />
             <TextButton
-              onPress={()=>{}}
+              onPress={()=>opneURl(PrivacyPolicy)}
               text='개인정보처리방침'
             />
             <TextButton
-              onPress={()=>{}}
+              onPress={()=>opneURl(TermsOfEmail)}
               text='이메일무단수집거부'
             />
           </Container>

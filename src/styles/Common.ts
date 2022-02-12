@@ -2,7 +2,26 @@
 import styled, { css } from 'styled-components';
 import JSUtility from '../utilities/JSUtility';
 import theme from './theme';
+import { Link } from 'react-router-dom';
 
+interface SeperateInput {
+  direction: string;
+  size: number;
+}
+export const Seperater = styled.div<SeperateInput>`
+  ${(props) =>
+    (props.direction === 'horizontal') &&
+    css`
+      width: ${JSUtility.convertPxToVw(props.size)}
+    `
+  }
+  ${(props) =>
+    (props.direction === 'vertical') &&
+    css`
+      height: ${JSUtility.convertPxToVw(props.size)}
+    `
+  }
+`;
 
 interface SectionInput {
   background: string;
@@ -11,7 +30,7 @@ interface SectionInput {
 export const SectionContainer = styled.div<SectionInput>`
   display:flex;
   flex: 1;
-  align-itmes: center;
+  align-items: center;
   justify-content: center;
   flex-direction: ${(props) => props.flexDirection};
   background: ${(props) => props.background};
@@ -22,14 +41,14 @@ export const LeftContainer = styled.div`
   display:flex;
   flex: 1;
   flex-direction: column;
-  align-itmes: start;
+  align-items: center;
   justify-content: center;
 `;
 export const RightContainer = styled.div`
   display:flex;
   flex: 1;
   flex-direction: column;
-  align-itmes: center;
+  align-items: center;
   justify-content: end;
 `;
 interface TitleInput {
@@ -66,11 +85,12 @@ export const ImgText = styled.p`
   text-align: center;
 `;
 
-export const Button = styled.a`
+export const Button = styled(Link)`
   cursor: pointer;
   text-align: center;
+  text-decoration: none;
   color:${theme.colors.white};
-  font-size:${JSUtility.convertPxToVw(20)};
+  font-size:${JSUtility.convertPxToVw(25)};
   width:${JSUtility.convertPxToVw(157)};
   padding: ${JSUtility.convertPxToVw(19)} ${JSUtility.convertPxToVw(53)};
   align-self:center;
@@ -82,17 +102,22 @@ export const Button = styled.a`
   }
 `;
 
-export const Container = styled.div<{flexDirection?:string}>`
+interface ContainerInput {
+  flexDirection?: string;
+  alignItems?: string;
+  justifyContent?: string;
+}
+export const Container = styled.div<ContainerInput>`
   display:flex;
   flex-direction: ${(props) => props.flexDirection ?? 'row'};
-  align-itmes: center;
-  justify-content: center;
+  align-items:  ${(props) => props.alignItems ?? 'center'};
+  justify-content:  ${(props) => props.justifyContent ?? 'center'};
 `;
 export const TextContainer = styled.div`
   display:flex;
   flex: 1;
   flex-direction: column;
-  align-itmes: center;
+  align-items: center;
   align-self:start;
   justify-content: center;
   margin-left: ${JSUtility.convertPxToVw(50)};
