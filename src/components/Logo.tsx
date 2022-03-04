@@ -24,7 +24,6 @@ export default Logo;
 
 const Container = styled(Link)`
   display:flex;
-  flex: 1;
   flex-direction: row;
   align-item: center;
   justify-content: flex-start;
