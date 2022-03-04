@@ -40,7 +40,10 @@ export const configSlice = createSlice({
       })
       .addCase(getUserSubribedStatus.fulfilled, (state, action) => {
         state.isSubscribed = action.payload;
-      });
+      })
+      .addCase(updateUserSubribedStatus.fulfilled, (state, action) => {
+        state.isSubscribed = action.payload;
+      })
   },
 });
 
