@@ -373,57 +373,57 @@ const SignUp = () => {
         inputs.map((item, index) => {
             return (
                 <React.Fragment key= {`inputs-${index}`}>
-                <Container
-                  flexDirection='column'
-                  alignItems='start'
-                >
-                  <Title fontSize={20}>{item.labelText}</Title>
-                  <InputContainer
+                  <Container
+                    flexDirection='column'
+                    alignItems='start'
                   >
-                    {item.leftRenderView && (
-                      <>
-                      {item.leftRenderView}
+                    <Title fontSize={20}>{item.labelText}</Title>
+                    <InputContainer
+                    >
+                      {item.leftRenderView && (
+                        <>
+                        {item.leftRenderView}
+                        <Seperater
+                          direction='horizontal'
+                          size={15}
+                        />
+                        </>
+                      )}
+                      <Container
+                        flexDirection='column'
+                        alignItems='start'
+                      >
+                        <CustomInput
+                          targetName={item.name}
+                          type={item.type}
+                          value={item.value}
+                          placeholder={item.placeholder}
+                          onChange={item.onChange}
+                          error={item.error}
+                          width={item.width}
+                          ref={item.ref}
+                        />
+                        {
+                          item.error && (
+                            <Title
+                              fontSize={13}
+                              color={theme.colors.treeGreen}
+                            >
+                              {item.errorText}
+                            </Title>  
+                          )
+                        }
+
+                      </Container>
                       <Seperater
                         direction='horizontal'
                         size={15}
                       />
-                      </>
-                    )}
-                    <Container
-                      flexDirection='column'
-                      alignItems='start'
-                    >
-                      <CustomInput
-                        targetName={item.name}
-                        type={item.type}
-                        value={item.value}
-                        placeholder={item.placeholder}
-                        onChange={item.onChange}
-                        error={item.error}
-                        width={item.width}
-                        ref={item.ref}
-                      />
-                      {
-                        item.error && (
-                          <Title
-                            fontSize={13}
-                            color={theme.colors.treeGreen}
-                          >
-                            {item.errorText}
-                          </Title>  
-                        )
-                      }
-
-                    </Container>
-                    <Seperater
-                      direction='horizontal'
-                      size={15}
-                    />
-                    {item.rightRenderView && (
-                      item.rightRenderView
-                    )}
-                  </InputContainer>
-                </Container>
+                      {item.rightRenderView && (
+                        item.rightRenderView
+                      )}
+                    </InputContainer>
+                  </Container>
               </React.Fragment>
             )
         })
@@ -451,7 +451,7 @@ const SignUp = () => {
     <Section
       flexDirection='column'
     >
-      <DefaultHeader/>
+      <DefaultHeader alignItems='center'/>
       <Seperater
         direction='vertical'
         size={15}

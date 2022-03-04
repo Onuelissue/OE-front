@@ -45,7 +45,7 @@ const Button = styled.a<ButtonInput>`
   font-size:${JSUtility.convertPxToVw(15)};
   color:${(props) => props.color};
   padding: ${JSUtility.convertPxToVw(15)} ${JSUtility.convertPxToVw(30)}  ${JSUtility.convertPxToVw(15)}  ${JSUtility.convertPxToVw(30)}  ;
-  border-radius: ${JSUtility.convertPxToVw(6)};
+  border-radius: ${JSUtility.convertPxToVw(7)};
   background-color:${(props) => props.backgroundColor};
 
   :hover {

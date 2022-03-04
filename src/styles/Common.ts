@@ -106,12 +106,16 @@ interface ContainerInput {
   flexDirection?: string;
   alignItems?: string;
   justifyContent?: string;
+  alignSelf?: string;
 }
 export const Container = styled.div<ContainerInput>`
   display:flex;
   flex-direction: ${(props) => props.flexDirection ?? 'row'};
   align-items:  ${(props) => props.alignItems ?? 'center'};
   justify-content:  ${(props) => props.justifyContent ?? 'center'};
+  ${(props) => props.alignSelf && css`
+    alignSelf: ${props.alignSelf};
+  `}
 `;
 export const TextContainer = styled.div`
   display:flex;
