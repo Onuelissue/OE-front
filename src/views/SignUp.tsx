@@ -11,6 +11,8 @@ import {
   DefaultHeader,
   Section,
   TextButton,
+  CheckBox,
+  CustomInput,
 } from '../common/Components';
 import { useNavigate } from 'react-router-dom';
 import { Container, Seperater, Title } from 'src/styles/Common';
@@ -20,9 +22,8 @@ import {
   STORAGE_KEY_USER_EMAIL,
   TermsOfService,
   RouteNames,
+  Inputs,
 } from '../constants';
-import CheckBox from 'src/components/CheckBox';
-import CustomInput from 'src/components/CustomInput';
 import styled from 'styled-components';
 import JSUtility from 'src/utilities/JSUtility';
 import ApiRequest from 'src/api/ApiRequest';
@@ -30,14 +31,6 @@ import ApiRequest from 'src/api/ApiRequest';
 enum AgreementIds {
   TERMS_OF_SERVICE = 'terms_of_service',
   PRIVACY = 'privacy',
-}
-
-enum Inputs {
-  ID = 'id',
-  PASSWORD = 'password',
-  PASSWORD_CHECK = 'passwordCheck',
-  EMAIL_CHECK = 'emailCheck',
-  DUPLICATED_EMAIL = 'duplicatedEmail',
 }
 
 

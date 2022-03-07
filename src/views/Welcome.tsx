@@ -20,9 +20,10 @@ import {
 } from '../constants';
 
 import { Container, Title } from 'src/styles/Common';
+import useIsLogin from 'src/hooks/useIsLogin';
 const Welcome = () => {
   const navigate = useNavigate();
-  const isAnonymous = true;
+  const { isLogin } = useIsLogin();
   const signUpLink = "/signup";
   const views = useMemo(()=>{
     const renders = [
@@ -55,36 +56,38 @@ const Welcome = () => {
     <>
       <Header>
         <Logo/>
-        {
-          isAnonymous
-          ? (
-            <>
-              <TextButton
-                onPress={() => navigate("signin")}
-                text='로그인'
-              />
-              <Seperator/>
-              <TextButton
-                onPress={() => navigate("signup")}
-                text='구독하기'
-              />
-            </>
+        <ButtonConatiner>
+          {
+            !isLogin
+            ? (
+              <>
+                <TextButton
+                  onPress={() => navigate("signin")}
+                  text='로그인'
+                />
+                <Seperator/>
+                <TextButton
+                  onPress={() => navigate("signup")}
+                  text='구독하기'
+                />
+              </>
 
-          )
-          : (
-            <>
-              <TextButton
-                onPress={()=>{}}
-                text='로그아웃'
-              />
-              <Seperator/>
-              <TextButton
-                onPress={()=>{}}
-                text='마이페이지'
-              />
-            </>
-          )
-        }
+            )
+            : (
+              <>
+                <TextButton
+                  onPress={()=>{}}
+                  text='로그아웃'
+                />
+                <Seperator/>
+                <TextButton
+                  onPress={()=>{}}
+                  text='마이페이지'
+                />
+              </>
+            )
+          }
+        </ButtonConatiner>
       </Header>
         { renderViews() }
       <Footer>
@@ -120,6 +123,15 @@ const Welcome = () => {
   );
 }
 
+
+const ButtonConatiner = styled.div`
+display: flex;
+flex: 1;
+flex-direction: row;
+align-items: center;
+justify-content: end;
+
+`;
 const Header = styled.div`
   display:flex;
   position:fixed;

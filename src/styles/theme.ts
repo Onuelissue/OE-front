@@ -11,6 +11,7 @@ const colors={
   pinkishGrey: '#c7c7c7',
   white:'white',
   grayishBrown: '#484747',
+  border: '#f2f2f2',
 };
 
 const fonts = {

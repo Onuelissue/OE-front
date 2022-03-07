@@ -15,3 +15,11 @@ export enum RouteNames {
   MYPAGE = '/mypage',
   FINDPASSWORD = '/findPassword',
 };
+
+export enum Inputs {
+  ID = 'id',
+  PASSWORD = 'password',
+  PASSWORD_CHECK = 'passwordCheck',
+  EMAIL_CHECK = 'emailCheck',
+  DUPLICATED_EMAIL = 'duplicatedEmail',
+}

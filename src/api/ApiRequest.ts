@@ -48,6 +48,25 @@ const ApiRequest = (function ApiRequestCreator() {
         resolve(2)
       ));
     },
+    updatePassword(id:string): Promise<Number> {
+      console.log(id);
+      return new Promise((resolve) => (
+        resolve(2)
+      ));
+    },
+    getUserSubscribed(id: string): Promise<boolean> {
+      console.log(id);
+      return new Promise((resolve) => (
+        resolve(true)
+      ));
+    },
+    updateUserSubribedStatus(id: string, subscribed: boolean): Promise<boolean> {
+      console.log(id);
+      return new Promise((resolve) => (
+        resolve(true)
+      ));
+    }
+    
   };
 }());
 
